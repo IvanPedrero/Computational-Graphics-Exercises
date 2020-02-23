@@ -22,9 +22,15 @@ class Drawing{
   FIGURE figure;
   COLOUR colour;
   boolean filled = false;
-  PVector p1;
+  PVector p1, p2;
+  boolean finishedFigure = false;
   
   void display(){
+    if(!finishedFigure){
+      displayPrevisualization();
+      return;
+    }
+    
     stroke(getColor(colour));
     if(filled){
       fill(getColor(colour));
@@ -33,21 +39,42 @@ class Drawing{
     }
     switch(figure){
       case point:  
-        circle(p1.x, p1.y, 50);
+        circle(p1.x, p1.y, p1.dist(p2));
         break;
       case line:
-        strokeWeight(5);
-        line(p1.x, p1.y, p1.x+100, p1.y+100);
-        strokeWeight(1);
+        line(p1.x, p1.y, p2.x, p2.y);
         break;
       case rectangle:
-        rect(p1.x, p1.y, 150, 100);
+        rect(p1.x, p1.y, p2.x-p1.x, p2.y-p1.y);
         break;
       case ellipse:
-        ellipse(p1.x, p1.y, 150, 100);
+        ellipse(p1.x, p1.y, p2.x-p1.x, p2.y-p1.y);
         break;
        default:
     }
+  }
+  
+  void displayPrevisualization(){
+    noFill();
+    strokeWeight(1);
+    stroke(0);
+    
+    switch(figure){
+      case point:  
+        circle(p1.x, p1.y, p1.dist(new PVector(mouseX, mouseY)));
+        break;
+      case line:
+        line(p1.x, p1.y, mouseX, mouseY);
+        break;
+      case rectangle:
+        rect(p1.x, p1.y, mouseX-p1.x, mouseY-p1.y);
+        break;
+      case ellipse:
+        ellipse(p1.x, p1.y, mouseX-p1.x, mouseY-p1.y);
+        break;
+       default:
+    }
+    
   }
 }
 
@@ -276,7 +303,24 @@ void mousePressed(){
 }
 
 void mouseReleased(){
+  if(mouseX <= 240){
+    if(drawings.get(drawings.size() - 1).finishedFigure == false){
+      print("removing figure");
+      drawings.remove(drawings.size() - 1);
+    }
+    return;
+  }
+  
+  if(drawings.size() == 0){
+    return;
+  }  
+  
   // TODO: Check for release of the mouse to draw a figure.
+  Drawing currentDrawing = drawings.get(drawings.size() - 1);
+  currentDrawing.p2 = new PVector(mouseX, mouseY);
+  currentDrawing.finishedFigure = true;
+  
+
 }
 
 void printDrawings(){
