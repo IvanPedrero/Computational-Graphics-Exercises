@@ -1,5 +1,7 @@
+// Boolean variable for fill option.
 boolean filled = true;
 
+// Enumerator for figure options.
 enum FIGURE{
   point, 
   line,
@@ -8,6 +10,7 @@ enum FIGURE{
 };
 FIGURE currentFigure = FIGURE.point;
 
+// Enumerator for color options.
 enum COLOUR{
   blue,
   orange,
@@ -18,25 +21,32 @@ enum COLOUR{
 }
 COLOUR currentColour = COLOUR.blue;
 
+// Class to save the figure objects drawn in the canvas.
 class Drawing{
+  
   FIGURE figure;
   COLOUR colour;
   boolean filled = false;
   PVector p1, p2;
   boolean finishedFigure = false;
   
+  // Display method that paints the current figure in the canvas.
   void display(){
+    // If the figure is not finished, draw a previsualization figure.
     if(!finishedFigure){
       displayPrevisualization();
       return;
     }
     
+    // Switch fill and color options.
     stroke(getColor(colour));
     if(filled){
       fill(getColor(colour));
     }else{
       noFill();
     }
+    
+    // Print the  figure in the canvas, depending on it's form.
     switch(figure){
       case point:  
         circle(p1.x, p1.y, p1.dist(p2));
@@ -54,11 +64,15 @@ class Drawing{
     }
   }
   
+  // This  method will draw a previsualization figure based on the first point clicked and the mouse position.
   void displayPrevisualization(){
+    
+    // Differentiate the pre-figure with no fill and grey color.
     noFill();
     strokeWeight(1);
     stroke(192);
     
+    // Draw the pre-figure.
     switch(figure){
       case point:  
         circle(p1.x, p1.y, p1.dist(new PVector(mouseX, mouseY)));
@@ -78,22 +92,34 @@ class Drawing{
   }
 }
 
+// List that will contain all the user-drawn figures.
 ArrayList<Drawing> drawings = new ArrayList<Drawing>();
 
+// Initialization method.
 void setup(){
+  // Canvas will be a square 900x900.
   size(900, 900);
 }
 
+// Update method.
 void draw(){
+  // Black canvas for better visualization of the figures.
   background(0);
+  
+  // Display options on the screen.
   drawFilledOptions(filled);
   drawFigureOptions(currentFigure);
   drawColorOptions(currentColour);
   drawDeleteOption();
+  
+  // Key listener for changing the figures on key pressed.
   keyPressedOptions();
+  
+  // Display the drawings.
   printDrawings();
 }
 
+// This method will display the fill options in the canvas.
 void drawFilledOptions(boolean filled){
   stroke(255);
   textSize(32);
@@ -115,6 +141,7 @@ void drawFilledOptions(boolean filled){
   }
 }
 
+// This method will display the figure options in the canvas.
 void drawFigureOptions(FIGURE figure){
   stroke(255);
   textSize(32);
@@ -161,6 +188,7 @@ void drawFigureOptions(FIGURE figure){
   stroke(0);
 }
 
+// This method will display the color options in the canvas.
 void drawColorOptions(COLOUR colour){
   stroke(255);
   textSize(32);
@@ -208,6 +236,7 @@ void drawColorOptions(COLOUR colour){
   }
 }
 
+// This method will display the delete button in the canvas.
 void drawDeleteOption(){
   stroke(0);
   textSize(32);
@@ -215,6 +244,7 @@ void drawDeleteOption(){
   text("DELETE", 20, 850);
 }
 
+// This method will return a color given an enumerator value.
 color getColor(COLOUR colour){
   switch(colour){
     case blue:
@@ -234,8 +264,10 @@ color getColor(COLOUR colour){
   }
 }
 
+// Click method.
 void mouseClicked() {
-    clickPressedOptions();
+  // Check if the user clicked a valid option.
+  clickPressedOptions();
 }
 
 void mousePressed(){
@@ -244,39 +276,46 @@ void mousePressed(){
     return;
   }
   
-  
+  // Create the figure.
   Drawing d = new Drawing();
   
+  // Apply parameters.
   d.figure = currentFigure;
   d.colour = currentColour;
   d.filled = filled;
   d.p1 = new PVector(mouseX, mouseY);
   
- drawings.add(d);
+  // Add the new figure to the list.
+  drawings.add(d);
  
 }
 
 void mouseReleased(){
+  // Avoid drawing figures on the options menu.
   if(mouseX <= 240){
     if(drawings.size() != 0){
       if(drawings.get(drawings.size() - 1).finishedFigure == false){
-        print("removing figure");
+        print("Removing figure...\n");
         drawings.remove(drawings.size() - 1);
       }
     }
     return;
   }
   
+  // Avoid finishing a drawing if none exists.
   if(drawings.size() == 0){
     return;
   }  
   
-  // TODO: Check for release of the mouse to draw a figure.
+  // Get the latest drawing in the list (current figure being drawn).
   Drawing currentDrawing = drawings.get(drawings.size() - 1);
+  // Finish it's position.
   currentDrawing.p2 = new PVector(mouseX, mouseY);
+  // Set it as finished to start drawing the true figure.
   currentDrawing.finishedFigure = true;
 }
 
+// This method will check if the user has clicked on a valid menu option.
 void clickPressedOptions(){
   // Fill picker :
   if(overOption(30, 30, 60, 90)){
@@ -325,6 +364,8 @@ void clickPressedOptions(){
     deleteDrawings();
   }
 }
+
+// This method will pick a new figure if the user has typed a key corresponding to the first letter of a figure.
 void keyPressedOptions(){
   if (keyPressed) {
     if (key == 'p' || key == 'P') {
@@ -342,6 +383,7 @@ void keyPressedOptions(){
   }
 }
 
+// This method will display each figure in the user-drawn list.
 void printDrawings(){
   for (int i = 0; i < drawings.size(); i++) {
     Drawing d = drawings.get(i);
@@ -349,10 +391,12 @@ void printDrawings(){
   }
 }
 
+// This method will delete all drawings in the user-drawn list.
 void deleteDrawings(){
   for (int i = drawings.size(); i-- != 0; drawings.remove(i));
 }
 
+// This method will return true if the mouse click is on a given coordinate with width and height.
 boolean overOption(int x, int y, int width, int height)  {
   if (mouseX >= x && mouseX <= x+width && 
       mouseY >= y && mouseY <= y+height) {
