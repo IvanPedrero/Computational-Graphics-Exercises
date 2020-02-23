@@ -57,7 +57,7 @@ class Drawing{
   void displayPrevisualization(){
     noFill();
     strokeWeight(1);
-    stroke(0);
+    stroke(192);
     
     switch(figure){
       case point:  
@@ -81,11 +81,11 @@ class Drawing{
 ArrayList<Drawing> drawings = new ArrayList<Drawing>();
 
 void setup(){
-  size(700, 900);
+  size(900, 900);
 }
 
 void draw(){
-  background(255);
+  background(0);
   drawFilledOptions(filled);
   drawFigureOptions(currentFigure);
   drawColorOptions(currentColour);
@@ -94,12 +94,13 @@ void draw(){
 }
 
 void drawFilledOptions(boolean filled){
-  stroke(0);
+  stroke(255);
   textSize(32);
-  fill(0, 102, 153);
+  fill(255);
   text("Filled?", 10, 30); 
   
   fill(0, 102, 153);
+  fill(255);
   triangle(30, 100, 60, 50, 90, 100);
 
   noFill();
@@ -114,33 +115,29 @@ void drawFilledOptions(boolean filled){
 }
 
 void drawFigureOptions(FIGURE figure){
-  stroke(0);
+  stroke(255);
   textSize(32);
-  fill(0, 102, 153);
+  fill(255);
   text("Figure : ", 10, 200); 
   
-  fill(0);
+  
   textSize(24);
   text("Point", 20, 250);
-  fill(0);
   circle(125, 240, 20);
   
-  fill(0);
-  textSize(24);
+  fill(255);
   text("Line", 20, 300);
-  fill(0);
+  noFill();
   line(110, 280, 170, 300);
   
-  fill(0);
-  textSize(24);
+  fill(255);
   text("Rect", 20, 350);
-  fill(0);
+  noFill();
   rect(110, 320, 70, 30);
   
-  fill(0);
-  textSize(24);
+  fill(255);
   text("Elipse", 20, 400);
-  fill(0);
+  noFill();
   ellipse(145, 390, 70, 30);
   
   noFill();
@@ -164,9 +161,9 @@ void drawFigureOptions(FIGURE figure){
 }
 
 void drawColorOptions(COLOUR colour){
-  stroke(0);
+  stroke(255);
   textSize(32);
-  fill(0, 102, 153);
+  fill(255);
   text("Colour : ", 10, 480);
   
   noFill();
@@ -228,7 +225,7 @@ color getColor(COLOUR colour){
     case yellow:
       return color(250, 250, 50);
     case black:
-      return color(0);
+      return color(192);
     case white:
       return color(255);
     default:
@@ -246,16 +243,16 @@ void mouseClicked() {
   }
   
   // Figure picker :
-  else if(overOption(20, 230, 180, 30)){
+  else if(overOption(20, 230, 190, 40)){
     currentFigure = FIGURE.point;
   } 
-  else if(overOption(15, 280, 180, 30)){
+  else if(overOption(15, 280, 190, 40)){
     currentFigure = FIGURE.line;
   }
-  else if(overOption(15, 330, 180, 30)){
+  else if(overOption(15, 330, 190, 40)){
     currentFigure = FIGURE.rectangle;
   }
-  else if(overOption(15, 380, 180, 30)){
+  else if(overOption(15, 380, 190, 40)){
     currentFigure = FIGURE.ellipse;
   }
   
@@ -280,7 +277,7 @@ void mouseClicked() {
   }
   
   // Delete option : 
-  else if(overOption(10, 820, 140, 100)){
+  else if(overOption(10, 830, 150, 130)){
     deleteDrawings();
   }  
 }
@@ -290,6 +287,7 @@ void mousePressed(){
   if(mouseX <= 240){
     return;
   }
+  
   
   Drawing d = new Drawing();
   
@@ -304,9 +302,11 @@ void mousePressed(){
 
 void mouseReleased(){
   if(mouseX <= 240){
-    if(drawings.get(drawings.size() - 1).finishedFigure == false){
-      print("removing figure");
-      drawings.remove(drawings.size() - 1);
+    if(drawings.size() != 0){
+      if(drawings.get(drawings.size() - 1).finishedFigure == false){
+        print("removing figure");
+        drawings.remove(drawings.size() - 1);
+      }
     }
     return;
   }
