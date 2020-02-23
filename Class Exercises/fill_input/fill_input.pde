@@ -1,4 +1,3 @@
-boolean overOption1;
 boolean filled = true;
 
 enum FIGURE{
@@ -18,10 +17,44 @@ enum COLOUR{
   white
 }
 COLOUR currentColour = COLOUR.blue;
+
+class Drawing{
+  FIGURE figure;
+  COLOUR colour;
+  boolean filled = false;
+  PVector p1;
   
+  void display(){
+    stroke(getColor(colour));
+    if(filled){
+      fill(getColor(colour));
+    }else{
+      noFill();
+    }
+    switch(figure){
+      case point:  
+        circle(p1.x, p1.y, 50);
+        break;
+      case line:
+        strokeWeight(5);
+        line(p1.x, p1.y, p1.x+100, p1.y+100);
+        strokeWeight(1);
+        break;
+      case rectangle:
+        rect(p1.x, p1.y, 150, 100);
+        break;
+      case ellipse:
+        ellipse(p1.x, p1.y, 150, 100);
+        break;
+       default:
+    }
+  }
+}
+
+ArrayList<Drawing> drawings = new ArrayList<Drawing>();
 
 void setup(){
-  size(500, 900);
+  size(700, 900);
 }
 
 void draw(){
@@ -29,6 +62,8 @@ void draw(){
   drawFilledOptions(filled);
   drawFigureOptions(currentFigure);
   drawColorOptions(currentColour);
+  drawDeleteOption();
+  printDrawings();
 }
 
 void drawFilledOptions(boolean filled){
@@ -49,8 +84,6 @@ void drawFilledOptions(boolean filled){
   }else{
     circle(140, 80, 80);
   }
-  
-  drawTestCircle();
 }
 
 void drawFigureOptions(FIGURE figure){
@@ -101,8 +134,6 @@ void drawFigureOptions(FIGURE figure){
      default:
   }
   stroke(0);
-  
-  drawTestFigure(figure);
 }
 
 void drawColorOptions(COLOUR colour){
@@ -120,9 +151,9 @@ void drawColorOptions(COLOUR colour){
   rect(20, 550, 30, 30);
   fill(getColor(COLOUR.yellow));
   rect(60, 550, 30, 30);
-  fill(getColor(COLOUR.white));
-  rect(20, 600, 30, 30);
   fill(getColor(COLOUR.black));
+  rect(20, 600, 30, 30);
+  fill(getColor(COLOUR.white));
   rect(60, 600, 30, 30);
   
   stroke(255,0,0);
@@ -150,7 +181,13 @@ void drawColorOptions(COLOUR colour){
       circle(75, 615, 60);
       break;
   }
+}
 
+void drawDeleteOption(){
+  stroke(0);
+  textSize(32);
+  fill(255, 0, 0);
+  text("DELETE", 20, 850);
 }
 
 color getColor(COLOUR colour){
@@ -168,11 +205,11 @@ color getColor(COLOUR colour){
     case white:
       return color(255);
     default:
-      return color(0);
+      return color(255);
   }
 }
 
-void mousePressed() {
+void mouseClicked() {
   // Fill picker :
   if(overOption(30, 30, 60, 90)){
     filled = true;
@@ -214,7 +251,43 @@ void mousePressed() {
   else if(overOption(60, 600, 30, 30)){
     currentColour = COLOUR.white;
   }
-    
+  
+  // Delete option : 
+  else if(overOption(10, 820, 140, 100)){
+    deleteDrawings();
+  }  
+}
+
+void mousePressed(){
+  // Avoid contact with the options menu.
+  if(mouseX <= 240){
+    return;
+  }
+  
+  Drawing d = new Drawing();
+  
+  d.figure = currentFigure;
+  d.colour = currentColour;
+  d.filled = filled;
+  d.p1 = new PVector(mouseX, mouseY);
+  
+ drawings.add(d);
+ 
+}
+
+void mouseReleased(){
+  // TODO: Check for release of the mouse to draw a figure.
+}
+
+void printDrawings(){
+  for (int i = 0; i < drawings.size(); i++) {
+    Drawing d = drawings.get(i);
+    d.display();
+  }
+}
+
+void deleteDrawings(){
+  for (int i = drawings.size(); i-- != 0; drawings.remove(i));
 }
 
 boolean overOption(int x, int y, int width, int height)  {
@@ -224,38 +297,4 @@ boolean overOption(int x, int y, int width, int height)  {
   } else {
     return false;
   }
-}
-
-// TESTING :
-
-void drawTestCircle(){
-  if(filled){
-     fill(255, 0 ,0);
-  }else{
-    noFill();
-  }
-  circle(400,100, 150);
-}
-
-void drawTestFigure(FIGURE figure){
-  noFill();
-  switch(figure){
-    case point:  
-      circle(width-100, height/3, 80);
-      break;
-     case line:
-      strokeWeight(5);
-      line(width-200, height/4, width-70, height/2);
-      strokeWeight(1);
-      break;
-     case rectangle:
-      rect(width-200, height/4, 150, 150);
-      break;
-     case ellipse:
-      ellipse(width-130, height/3, 150, 100);
-      break;
-     default:
-       System.out.println("NOTHING");
-  }
-  fill(0);
 }
