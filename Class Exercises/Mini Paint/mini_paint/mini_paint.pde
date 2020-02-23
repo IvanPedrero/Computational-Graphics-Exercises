@@ -90,6 +90,7 @@ void draw(){
   drawFigureOptions(currentFigure);
   drawColorOptions(currentColour);
   drawDeleteOption();
+  keyPressedOptions();
   printDrawings();
 }
 
@@ -234,6 +235,49 @@ color getColor(COLOUR colour){
 }
 
 void mouseClicked() {
+    clickPressedOptions();
+}
+
+void mousePressed(){
+  // Avoid contact with the options menu.
+  if(mouseX <= 240){
+    return;
+  }
+  
+  
+  Drawing d = new Drawing();
+  
+  d.figure = currentFigure;
+  d.colour = currentColour;
+  d.filled = filled;
+  d.p1 = new PVector(mouseX, mouseY);
+  
+ drawings.add(d);
+ 
+}
+
+void mouseReleased(){
+  if(mouseX <= 240){
+    if(drawings.size() != 0){
+      if(drawings.get(drawings.size() - 1).finishedFigure == false){
+        print("removing figure");
+        drawings.remove(drawings.size() - 1);
+      }
+    }
+    return;
+  }
+  
+  if(drawings.size() == 0){
+    return;
+  }  
+  
+  // TODO: Check for release of the mouse to draw a figure.
+  Drawing currentDrawing = drawings.get(drawings.size() - 1);
+  currentDrawing.p2 = new PVector(mouseX, mouseY);
+  currentDrawing.finishedFigure = true;
+}
+
+void clickPressedOptions(){
   // Fill picker :
   if(overOption(30, 30, 60, 90)){
     filled = true;
@@ -279,48 +323,23 @@ void mouseClicked() {
   // Delete option : 
   else if(overOption(10, 830, 150, 130)){
     deleteDrawings();
-  }  
-}
-
-void mousePressed(){
-  // Avoid contact with the options menu.
-  if(mouseX <= 240){
-    return;
   }
-  
-  
-  Drawing d = new Drawing();
-  
-  d.figure = currentFigure;
-  d.colour = currentColour;
-  d.filled = filled;
-  d.p1 = new PVector(mouseX, mouseY);
-  
- drawings.add(d);
- 
 }
-
-void mouseReleased(){
-  if(mouseX <= 240){
-    if(drawings.size() != 0){
-      if(drawings.get(drawings.size() - 1).finishedFigure == false){
-        print("removing figure");
-        drawings.remove(drawings.size() - 1);
-      }
+void keyPressedOptions(){
+  if (keyPressed) {
+    if (key == 'p' || key == 'P') {
+      currentFigure = FIGURE.point;
     }
-    return;
+    else if (key == 'l' || key == 'L') {
+      currentFigure = FIGURE.line;
+    }
+    else if (key == 'r' || key == 'R') {
+      currentFigure = FIGURE.rectangle;
+    }
+    else if (key == 'e' || key == 'E') {
+      currentFigure = FIGURE.ellipse;
+    }
   }
-  
-  if(drawings.size() == 0){
-    return;
-  }  
-  
-  // TODO: Check for release of the mouse to draw a figure.
-  Drawing currentDrawing = drawings.get(drawings.size() - 1);
-  currentDrawing.p2 = new PVector(mouseX, mouseY);
-  currentDrawing.finishedFigure = true;
-  
-
 }
 
 void printDrawings(){
