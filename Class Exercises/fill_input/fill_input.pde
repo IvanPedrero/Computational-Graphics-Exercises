@@ -7,18 +7,28 @@ enum FIGURE{
   rectangle,
   ellipse
 };
-
 FIGURE currentFigure = FIGURE.point;
+
+enum COLOUR{
+  blue,
+  orange,
+  green,
+  yellow,
+  black,
+  white
+}
+COLOUR currentColour = COLOUR.blue;
+  
 
 void setup(){
   size(500, 900);
-
 }
 
 void draw(){
   background(255);
   drawFilledOptions(filled);
   drawFigureOptions(currentFigure);
+  drawColorOptions(currentColour);
 }
 
 void drawFilledOptions(boolean filled){
@@ -95,33 +105,116 @@ void drawFigureOptions(FIGURE figure){
   drawTestFigure(figure);
 }
 
+void drawColorOptions(COLOUR colour){
+  stroke(0);
+  textSize(32);
+  fill(0, 102, 153);
+  text("Colour : ", 10, 480);
+  
+  noFill();
+  fill(getColor(COLOUR.blue));
+  rect(20, 500, 30, 30);
+  fill(getColor(COLOUR.orange));
+  rect(60, 500, 30, 30);
+  fill(getColor(COLOUR.green));
+  rect(20, 550, 30, 30);
+  fill(getColor(COLOUR.yellow));
+  rect(60, 550, 30, 30);
+  fill(getColor(COLOUR.white));
+  rect(20, 600, 30, 30);
+  fill(getColor(COLOUR.black));
+  rect(60, 600, 30, 30);
+  
+  stroke(255,0,0);
+  noFill();
+  switch(colour){
+    case blue:
+      circle(35, 515, 50);
+      break;
+    case orange:
+      circle(75, 515, 60);
+      break;
+    case green:
+      circle(35, 565, 60);
+      break;
+    case yellow:
+      circle(75, 565, 60);
+      break;
+    case black:
+      circle(35, 615, 60);
+      break;
+    case white:
+      circle(75, 615, 60);
+      break;
+    default:
+      circle(75, 615, 60);
+      break;
+  }
+
+}
+
+color getColor(COLOUR colour){
+  switch(colour){
+    case blue:
+      return color(50, 200, 255);
+    case orange:
+      return color(255, 150, 50);
+    case green:
+      return color(100, 255, 50);
+    case yellow:
+      return color(250, 250, 50);
+    case black:
+      return color(0);
+    case white:
+      return color(255);
+    default:
+      return color(0);
+  }
+}
+
 void mousePressed() {
-  // Click on filled option!
+  // Fill picker :
   if(overOption(30, 30, 60, 90)){
     filled = true;
   }
-  
-  // Click on no fill option!
   else if(overOption(110, 30, 60, 90)){
     filled = false;
   }
   
-  // Click on the point option.
+  // Figure picker :
   else if(overOption(20, 230, 180, 30)){
     currentFigure = FIGURE.point;
-  }
-  
+  } 
   else if(overOption(15, 280, 180, 30)){
     currentFigure = FIGURE.line;
   }
-  
   else if(overOption(15, 330, 180, 30)){
     currentFigure = FIGURE.rectangle;
   }
-  
   else if(overOption(15, 380, 180, 30)){
     currentFigure = FIGURE.ellipse;
   }
+  
+  // Colour picker : 
+  else if(overOption(20, 500, 30, 30)){
+    currentColour = COLOUR.blue;
+  }
+  else if(overOption(60, 500, 30, 30)){
+    currentColour = COLOUR.orange;
+  }
+  else if(overOption(20, 550, 30, 30)){
+    currentColour = COLOUR.green;
+  }
+  else if(overOption(60, 550, 30, 30)){
+    currentColour = COLOUR.yellow;
+  }
+  else if(overOption(20, 600, 30, 30)){
+    currentColour = COLOUR.black;
+  }
+  else if(overOption(60, 600, 30, 30)){
+    currentColour = COLOUR.white;
+  }
+    
 }
 
 boolean overOption(int x, int y, int width, int height)  {
